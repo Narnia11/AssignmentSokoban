@@ -1,0 +1,34 @@
+body{
+    margin: 5;
+    background: pink;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+h1{
+    margin: 5px;
+    font-size: x-large;
+    color: rgb(68, 16, 117);
+    font-size: 3rem; 
+}
+button{
+    margin: 3px;
+    display: block;
+    background: rgb(206, 133, 183);
+    border-radius: 50px;
+    padding: 1rem 3rem;
+    font-weight: 600;
+    font-size: 2rem;
+    color: #722851;
+}
+button:hover { 
+    background: #a43c75;
+  }
+  
+  button:active {
+    transform: scale(0.9);
+  }
+  header {
+    margin-right: 5rem; 
+  }
