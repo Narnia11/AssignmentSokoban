@@ -1,9 +1,7 @@
 body{
   margin: 5;
   background: pink;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
 
 }
 h1{
@@ -33,29 +31,50 @@ header {
   margin-right: 5rem; 
 }
 
+br {
+  content: "";
+  margin: -1em;
+  display: block;
+  font-size: 24%;
+}
 div#map{
-  width:1700px;
-  border:1px solid green;
   margin:auto;
+  text-align:center;
 }
 div#map>div{
-  width:100px;
-  height:100px;
   border:1px solid black;
   display:inline-block;
+  width:30px;
+  height:30px;
+  margin:0;
+  padding:0;
 }
 div#map>div.emptpySpace{
-  background-color:white;
+
+    background-image: url("img/boxHome.png");
+    background-color: #cccccc;
+
 }
 div#map>div.wall{
-  background-color:brown; /*I will put the icon from img folder later*/
+  background-image: url("img/wall.png");
+  background-color:brown;
 }
 div#map>div.MovableBlock{
-  background-color:black;  /*I will put the icon from img folder later*/
+  background-image: url("img/box.png");
+  background-color:black;
 }
 div#map>div.Player{
-  background-color:red;  /*I will put the icon from img folder later*/
+  background-color:red;
 }
 div#map>div.GoalArea{
-  background-color:yellow;  /*I will put the icon from img folder later*/
+  background-image: url("img/goal.png");
+  background-color:yellow;
+}
+div#map>div.PlayerGoalArea{
+  background-color:red;
+
+}
+div#map>div.BoxGoalArea{
+  background-image: url("img/box.png");
+
 }
