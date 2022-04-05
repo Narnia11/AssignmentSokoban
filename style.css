@@ -30,10 +30,10 @@ button:active {
 header {
   margin-right: 5rem; 
 }
-
+/*******************************************************************/
 br {
   content: "";
-  margin: -1em;
+  margin: -2em;
   display: block;
   font-size: 24%;
 }

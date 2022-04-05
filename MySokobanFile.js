@@ -169,6 +169,7 @@ function Reset() {
 //to mock move functionality
 document.onkeydown = function(e) {
   e.preventDefault();
+  debugger;
   switch (e.keyCode) {
       case 37:
         document.getElementById("messageBox").innerHTML="move left";
@@ -359,15 +360,22 @@ else{
 
         Reset();
   
-           break;
+        break;
   
-      default:
+        default:
 
-        tileMap01.mapGrid[currentPostion[0]][currentPostion[1]]=[" "];
-        tileMap01.mapGrid[targetPostion[0]][targetPostion[1]]=["P"];
-        tileMap01.mapGrid[targetBoxPostion[0]][targetBoxPostion[1]]=["B"];
-        Reset();
-
-
-    } 
+  if(tileMap01.mapGrid[currentPostion[0]][currentPostion[1]][0]==["P"]){
+    tileMap01.mapGrid[currentPostion[0]][currentPostion[1]]=[" "];
+      }
+  else if(tileMap01.mapGrid[currentPostion[0]][currentPostion[1]][0]==["G"]||tileMap01.mapGrid[currentPostion[0]][currentPostion[1]][0]==["PG"]){
+    tileMap01.mapGrid[currentPostion[0]][currentPostion[1]]=["G"];
+      }
+      tileMap01.mapGrid[targetPostion[0]][targetPostion[1]]=["P"];
+      tileMap01.mapGrid[targetBoxPostion[0]][targetBoxPostion[1]]=["B"];
+      Reset();
+          
+          
+     } 
   }
+          
+          
