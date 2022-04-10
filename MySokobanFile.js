@@ -6,17 +6,11 @@ document.body.appendChild(div);
 
 //to append map item
 const target = document.getElementById('map');
-var currentPostion = new Array(2);
-var targetPostion = new Array(2);
-var targetBoxPostion = new Array(2);
-
-
-
+var PlayerPostion , nextBlock , nextNextblock ;
 
 function CreateMap() {
 
   
-
   for (let x = 0; x <  tileMap01.height; x++) {
     
     for (let y = 0; y< tileMap01.width; y++) {
@@ -25,37 +19,35 @@ function CreateMap() {
 
       if(tileMap01.mapGrid[x][y]==" "){
         element.className ="emptpySpace";
-
+        element.id=x+','+y;
       }
       else if(tileMap01.mapGrid[x][y]=="W"){
         element.className="wall";
-
+        element.id=x+','+y;
       }
       else if(tileMap01.mapGrid[x][y]=="B"){
         element.className="MovableBlock";
-
+        element.id=x+','+y;
       }
       else if(tileMap01.mapGrid[x][y]=="P"){
         element.className="Player";
-        currentPostion[0]=x;//set p current posiotion
-        currentPostion[1]=y;//set p current posiotion
+        element.id=x+','+y;
       }
       else if(tileMap01.mapGrid[x][y]=="G"){
         element.className="GoalArea";
-
+        element.id=x+','+y;
       }
       else if(tileMap01.mapGrid[x][y]=="PG"){
         element.className="PlayerGoalArea";
-        currentPostion[0]=x;//set p current posiotion
-        currentPostion[1]=y;//set p current posiotion
+        element.id=x+','+y;
       }
-      else if(tileMap01.mapGrid[x][y]=="BG"){
-       
+      else if(tileMap01.mapGrid[x][y]=="BG"){      
         element.className="BoxGoalArea";
+        element.id=x+','+y;
       }
       else{
         element.className ="emptpySpace";
-
+        element.id=x+','+y;
       }
 
 
@@ -140,19 +132,14 @@ function ResetMap(){
 
 }
 function CheckWin(){
-  
-
-    for (let x = 0; x <  tileMap01.height; x++) {
-      
-      for (let y = 0; y< tileMap01.width; y++) {
-    
-        if(tileMap01.mapGrid[x][y]=="G")
-        return false;
-      }
+  const collection = document.getElementsByClassName("GoalArea"); 
+  if(!collection.length>0){
+    document.getElementById("messageBox").innerHTML+="<h1>You Won!</h1>";
+  }
 
 }
-return true;
-}
+
+
 
 
 //to reset map
@@ -169,213 +156,102 @@ function Reset() {
 //to mock move functionality
 document.onkeydown = function(e) {
   e.preventDefault();
-  debugger;
+  
   switch (e.keyCode) {
-      case 37:
-        document.getElementById("messageBox").innerHTML="move left";
-        
-        document.getElementById("messageBox").innerHTML+="current position x: "+[currentPostion[0]]+'current position y: '+[currentPostion[1]];
+    case 37:
+      document.getElementById("messageBox").innerHTML="move left";
+      SetPlayerPosition();
+      var playerPositionArr=PlayerPostion.split(',');
+      
+      Move(0,-1);
+                break;
+    case 38:
+      document.getElementById("messageBox").innerHTML="move up";
+      SetPlayerPosition();
+      var playerPositionArr=PlayerPostion.split(',');
+      
+      Move(-1,0);
+        break;
+    case 39:
+      document.getElementById("messageBox").innerHTML="move right";
+      SetPlayerPosition();
+      var playerPositionArr=PlayerPostion.split(',');
+      
 
-        MoveLeft();
-                  break;
-      case 38:
-        document.getElementById("messageBox").innerHTML="move up";
-        
-        document.getElementById("messageBox").innerHTML+="current position x: "+[currentPostion[0]]+'current position y: '+[currentPostion[1]];
-
-MoveUp();
-          break;
-      case 39:
-        document.getElementById("messageBox").innerHTML="move right";
-        
-        document.getElementById("messageBox").innerHTML+="current position x: "+[currentPostion[0]]+'current position y: '+[currentPostion[1]];
-
-MoveRight();
-          break;
-      case 40:
-        document.getElementById("messageBox").innerHTML="move down";
-        
-        document.getElementById("messageBox").innerHTML+="current position x: "+[currentPostion[0]]+'current position y: '+[currentPostion[1]];
-
-MoveDown();
-          break;
-  }
+      Move(0,1);
+        break;
+    case 40:
+      document.getElementById("messageBox").innerHTML="move down";
+      SetPlayerPosition()
+      var playerPositionrr=PlayerPostion.split(',');
+      
+      Move(+1,0);
+        break;
+}
 };
+function Move(y,x){
+ 
 
-function MoveUp(){
-  var destination=tileMap01.mapGrid[currentPostion[0]-1][currentPostion[1]];
-  targetPostion[0]=currentPostion[0]-1;
-  targetPostion[1]=currentPostion[1];
-  move(destination,"Up");
+var playerPositionArr = PlayerPostion.split(',');
+var nextBlockId=( String((parseInt(playerPositionArr[0]) + y))+','+String((parseInt(playerPositionArr[1]) + x)) );
+var nextNextblockId=( String((parseInt(playerPositionArr[0]) + (y * 2)))+','+ String((parseInt(playerPositionArr[1])+ (x * 2))) );
 
-   
+nextBlock = document.getElementById( String((parseInt(playerPositionArr[0]) + y))+','+String((parseInt(playerPositionArr[1]) + x)) );
+nextNextblock = document.getElementById( String((parseInt(playerPositionArr[0]) + (y * 2)))+','+ String((parseInt(playerPositionArr[1])+ (x * 2))) );
+
+if(nextBlock.classList.contains('wall')){
+  document.getElementById("messageBox").innerHTML="oops can't move,it's a wall.";
 }
-function MoveDown(){
-  var destination=tileMap01.mapGrid[currentPostion[0]+1][currentPostion[1]];
-  
-  targetPostion[0]=currentPostion[0]+1;
-  targetPostion[1]=currentPostion[1];
-  move(destination,"Down");
-  
- }
-  
-function MoveRight(){
-  
-  var destination=tileMap01.mapGrid[currentPostion[0]][currentPostion[1]+1];
-  targetPostion[0]=currentPostion[0];
-  targetPostion[1]=currentPostion[1]+1;
-  move(destination,"Right");
+else if(nextBlock.classList.contains('MovableBlock')){
+if(nextNextblock.classList.contains('wall')){
+document.getElementById("messageBox").innerHTML="oops can't move,the way is blocked";
+
+}
+else if(nextNextblock.classList.contains('emptpySpace')){
+var playerTag=document.getElementsByClassName('Player')[0];
+playerTag.classList.remove("Player");
+  if(!playerTag.classList.contains('GoalArea')){
+    playerTag.classList.add("emptpySpace");   } 
+
+  nextBlock.classList.remove("MovableBlock");
+  nextBlock.classList.add("Player");
+  nextNextblock.classList.remove("emptpySpace");
+  nextNextblock.classList.add("MovableBlock");
+}
+else if(nextNextblock.classList.contains('GoalArea')){
+  var playerTag=document.getElementsByClassName('Player')[0];
+  playerTag.classList.remove("Player");
+  playerTag.classList.add("emptpySpace");
+  nextBlock.classList.remove("MovableBlock");
+  nextBlock.classList.add("Player");
+  nextNextblock.classList.remove("GoalArea");
+  nextNextblock.classList.add("emptpySpace");
+}
 
   }
-function MoveLeft(){
-  
-  var destination=tileMap01.mapGrid[currentPostion[0]][currentPostion[1]-1];
-  targetPostion[0]=currentPostion[0];
-  targetPostion[1]=currentPostion[1]-1;
-  move(destination,"Left");
-
-   }
-
-  function move( destination,direction){
-
-
-    switch(destination[0]) {
-
-      case "W":
-        document.getElementById("messageBox").innerHTML="oops can't move,it's a wall.";
-        break;
-      case "B":
-
-        if(direction=="Up"){
-          var BoxDestination=tileMap01.mapGrid[targetPostion[0]-1][targetPostion[1]];
-          targetBoxPostion[0]=[targetPostion[0]-1];
-          targetBoxPostion[1]=[targetPostion[1]];
-      if(BoxDestination[0]==" "||BoxDestination[0]=="G"){
-      movebox(BoxDestination,targetBoxPostion)
-    }
-else{
-  document.getElementById("messageBox").innerHTML="oops can't move,the way is bloked.";
-}
-        }
-        else if(direction=="Left"){
-          var BoxDestination=tileMap01.mapGrid[targetPostion[0]][targetPostion[1]-1];
-          targetBoxPostion[0]=[targetPostion[0]];
-          targetBoxPostion[1]=[targetPostion[1]-1];
-          if(BoxDestination[0]==" "||BoxDestination[0]=="G"){
-            movebox(BoxDestination,targetBoxPostion)
-          }
-          else{
-            document.getElementById("messageBox").innerHTML="oops can't move,the way is bloked.";
-          }
-
-        }
-        else if(direction=="Right"){
-          var BoxDestination=tileMap01.mapGrid[targetPostion[0]][targetPostion[1]+1];
-          targetBoxPostion[0]=[targetPostion[0]];
-          targetBoxPostion[1]=[targetPostion[1]+1];
-          if(BoxDestination[0]==" "||BoxDestination[0]=="G"){
-            movebox(BoxDestination,targetBoxPostion)
-          }
-          else{
-            document.getElementById("messageBox").innerHTML="oops can't move,the way is bloked.";
-          }
-
-        }
-        else if(direction=="Down"){
-          var BoxDestination=tileMap01.mapGrid[targetPostion[0]+1][targetPostion[1]];
-          targetBoxPostion[0]=[targetPostion[0]+1];
-          targetBoxPostion[1]=[targetPostion[1]];
-          if(BoxDestination[0]==" "||BoxDestination[0]=="G"){
-            movebox(BoxDestination,targetBoxPostion)
-          }
-          else{
-            document.getElementById("messageBox").innerHTML="oops can't move,the way is bloked.";
-          }
-
-        }
-        break;
-        case "G":
-          
-          if((tileMap01.mapGrid[currentPostion[0]][currentPostion[1]])[0]==["PG"]){
-            tileMap01.mapGrid[currentPostion[0]][currentPostion[1]]=["G"];
-          }else{
-            (tileMap01.mapGrid[currentPostion[0]][currentPostion[1]])[0]=[" "];
-
-          }
-          tileMap01.mapGrid[targetPostion[0]][targetPostion[1]]=["PG"];
-          Reset();
-          
-
-          break;
-
-          case "PG":
-            
-            tileMap01.mapGrid[currentPostion[0]][currentPostion[1]]=["G"];
-            tileMap01.mapGrid[targetPostion[0]][targetPostion[1]]=["PG"];
-            Reset();
-            
-
-            break;
-
-      default:
-        
-        if(tileMap01.mapGrid[currentPostion[0]][currentPostion[1]][0]==[" "]){
-          tileMap01.mapGrid[currentPostion[0]][currentPostion[1]]=[" "];//set current postion "" to show grass
-        }
-        else if(tileMap01.mapGrid[currentPostion[0]][currentPostion[1]][0]==["PG"]){
-          tileMap01.mapGrid[currentPostion[0]][currentPostion[1]]=["G"];//set current postion "" to show grass
-        }
-        else if(tileMap01.mapGrid[currentPostion[0]][currentPostion[1]][0]==["P"]){
-          tileMap01.mapGrid[currentPostion[0]][currentPostion[1]]=[" "];//set current postion "" to show grass
-        }
-        
-        tileMap01.mapGrid[targetPostion[0]][targetPostion[1]]=["P"];//set person at next position
-        Reset();
-
-
-    } 
+  else if(nextBlock.classList.contains('emptpySpace')){
+    var playerTag=document.getElementsByClassName('Player')[0];
+    playerTag.classList.remove("Player");
+   if(!playerTag.classList.contains('GoalArea')){
+    playerTag.classList.add("emptpySpace");
+   } 
+    nextBlock.classList.remove("emptpySpace");
+    nextBlock.classList.add("Player");
   }
-
-  function movebox(BoxDestination,targetBoxPostion){
-    
-    switch(BoxDestination[0]) {
-      case "W":
-        document.getElementById("messageBox").innerHTML="oops can't move,it's a wall.";
-        break;
-      case "B":
-        document.getElementById("messageBox").innerHTML="oops can't move,it's a wall.";
-
-         break;
-      case "G":
-        document.getElementById("messageBox").innerHTML="your are on the target";
-
-        if((tileMap01.mapGrid[currentPostion[0]][currentPostion[1]])==["PG"]){
-          tileMap01.mapGrid[currentPostion[0]][currentPostion[1]]=["G"];
-        }else{
-          (tileMap01.mapGrid[currentPostion[0]][currentPostion[1]])=[" "];
-          (tileMap01.mapGrid[targetPostion[0]][targetPostion[1]])=["P"];
-          tileMap01.mapGrid[targetBoxPostion[0]][targetBoxPostion[1]]=["BG"];
-
-        }
-
-        Reset();
-  
-        break;
-  
-        default:
-
-  if(tileMap01.mapGrid[currentPostion[0]][currentPostion[1]][0]==["P"]){
-    tileMap01.mapGrid[currentPostion[0]][currentPostion[1]]=[" "];
-      }
-  else if(tileMap01.mapGrid[currentPostion[0]][currentPostion[1]][0]==["G"]||tileMap01.mapGrid[currentPostion[0]][currentPostion[1]][0]==["PG"]){
-    tileMap01.mapGrid[currentPostion[0]][currentPostion[1]]=["G"];
-      }
-      tileMap01.mapGrid[targetPostion[0]][targetPostion[1]]=["P"];
-      tileMap01.mapGrid[targetBoxPostion[0]][targetBoxPostion[1]]=["B"];
-      Reset();
-          
-          
+  else if(nextBlock.classList.contains('GoalArea')){
+    var playerTag=document.getElementsByClassName('Player')[0];
+    playerTag.classList.remove("Player");
+    if(!playerTag.classList.contains('GoalArea')){
+      playerTag.classList.add("emptpySpace");
      } 
+    nextBlock.classList.add("Player");
   }
-          
-          
+
+  CheckWin();
+
+ }
+
+ function SetPlayerPosition(){
+  PlayerPostion = document.getElementsByClassName('Player')[0].id;
+ }
+
